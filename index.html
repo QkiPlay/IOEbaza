@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminal File Browser</title>
+    <title>Baza IOE</title>
     <style>
         body {
             background-color: #1e1e1e;
@@ -54,7 +54,7 @@
 </head>
 <body>
     <div class="terminal">
-        <div class="prompt">$ tree</div>
+        <div class="prompt">$ Baza wiedzy IOE</div>
         <div class="tree-output" id="file-tree"></div>
     </div>
 
@@ -70,10 +70,10 @@
             let output = '';
             
             // Root directory
-            output += '<span style="color: #00ffff; font-weight: bold;">your-repo/</span>\n';
+            output += '<span style="color: #00ffff; font-weight: bold;">IOEbaza/</span>\n';
             
             // Add index.html
-            output += '<span class="tree-connector">├─</span> <a href="index.html" class="file-link" target="_blank">index.html</a> <span style="color: #666;">(the file browser interface)</span>\n';
+            output += '<span class="tree-connector">├─</span> <a href="README.md" class="file-link" target="_blank">README.md</a> <span style="color: #666;"></span>\n';
             
             folders.forEach((folderName, folderIndex) => {
                 const files = fileStructure[folderName];
