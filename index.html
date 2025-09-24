@@ -1,53 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Simple File Browser</title>
-<style>
-  body { font-family: Arial, sans-serif; padding: 20px; }
-  ul { list-style-type: none; padding-left: 20px; }
-  li { margin: 5px 0; }
-  a { text-decoration: none; color: #0366d6; }
-  a:hover { text-decoration: underline; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Browser</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .folder { margin-bottom: 15px; }
+        .folder-name { font-weight: bold; margin-bottom: 5px; }
+        .file-item { margin-left: 20px; margin-bottom: 3px; }
+        .file-link { color: #0366d6; text-decoration: none; }
+        .file-link:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-<h1>File Browser</h1>
-<div id="file-tree"></div>
+    <h1>File Browser</h1>
+    <div id="file-tree"></div>
 
-<script>
-// File structure JSON - add folders/files here for update
-const fileStructure = {
-    "Wprowadzenie do informatyki": ["Zad 9.1.py","],
-};
+    <script>
+        // File structure - edit this to add folders/files
+        const fileStructure = {
+            "Wprowadzenie do informatyki": ["Zadanie9.1.py"]
+        };
 
-// Base URL for files - adjust as needed to your GitHub Pages root or repo
-const baseURL = './';
-
-function createFileTree(container, structure) {
-  const ul = document.createElement('ul');
-  for (const folder in structure) {
-    const liFolder = document.createElement('li');
-    liFolder.textContent = folder;
-    const ulFiles = document.createElement('ul');
-    structure[folder].forEach(file => {
-      const liFile = document.createElement('li');
-      const aFile = document.createElement('a');
-      aFile.textContent = file;
-      aFile.href = baseURL + folder + '/' + file;
-      aFile.target = '_blank';
-      liFile.appendChild(aFile);
-      ulFiles.appendChild(liFile);
-    });
-    liFolder.appendChild(ulFiles);
-    ul.appendChild(liFolder);
-  }
-  container.appendChild(ul);
-}
-
-const container = document.getElementById('file-tree');
-createFileTree(container, fileStructure);
-</script>
+        // Wait for page to load
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('file-tree');
+            
+            for (const folderName in fileStructure) {
+                // Create folder div
+                const folderDiv = document.createElement('div');
+                folderDiv.className = 'folder';
+                
+                // Create folder name
+                const folderNameDiv = document.createElement('div');
+                folderNameDiv.className = 'folder-name';
+                folderNameDiv.textContent = folderName;
+                folderDiv.appendChild(folderNameDiv);
+                
+                // Create files
+                fileStructure[folderName].forEach(filename => {
+                    const fileDiv = document.createElement('div');
+                    fileDiv.className = 'file-item';
+                    
+                    const fileLink = document.createElement('a');
+                    fileLink.href = `./${folderName}/${filename}`;
+                    fileLink.className = 'file-link';
+                    fileLink.textContent = filename;
+                    fileLink.target = '_blank';
+                    
+                    fileDiv.appendChild(fileLink);
+                    folderDiv.appendChild(fileDiv);
+                });
+                
+                container.appendChild(folderDiv);
+            }
+        });
+    </script>
 </body>
 </html>
