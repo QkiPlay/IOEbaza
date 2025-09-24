@@ -1,0 +1,2 @@
+# bazaioe.github.io
+Strona
