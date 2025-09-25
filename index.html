@@ -71,7 +71,7 @@
           if (["md", "markdown"].includes(ext)) {
             return `preview.html?file=${encodeURIComponent(filePath)}`;
           } else if (ext === "pdf") {
-            return `pdfjs/web/viewer.html?file=${encodeURIComponent(filePath)}`;
+            return `pdfjs/web/viewer.html?file=../../${encodeURIComponent(filePath)}`;
           } else {
             return `https://github.com/QkiPlay/IOEbaza/blob/main/${encodeURIComponent(filePath)}`;
           }
