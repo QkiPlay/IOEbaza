@@ -68,26 +68,26 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
     const visibleItems = items
         .filter(item => !isHidden(item.name))
         .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
-
     for (let i = 0; i < visibleItems.length; i++) {
         const item = visibleItems[i];
         const isLast = i === visibleItems.length - 1;
         const connector = isLast ? "└── " : "├── ";
         const linePrefix = prefix + connector;
-
         const line = document.createElement("div");
         line.className = "tree-line";
-
         if (item.type === "dir") {
             const folderId = "folder_" + Math.random().toString(36).slice(2);
-            line.innerHTML = `<span style="white-space:pre;">${linePrefix}</span><span class="folder-toggle" data-folderid="${folderId}" style="cursor:pointer;"><span class="arrow" style="width:16px;display:inline-block;">▶️</span></span><span style="margin-left:2px;">${getFileIcon(item.name, "dir")}</span><span class="folder-name">${item.name}/</span>`;
+            line.innerHTML =
+                `<span style="white-space:pre;">${linePrefix}</span>` +
+                `<span class="folder-toggle" data-folderid="${folderId}" style="cursor:pointer;"><span class="arrow" style="width:16px;display:inline-block;">▶️</span></span>` +
+                `${getFileIcon(item.name, "dir")}` +
+                `<span class="folder-name">${item.name}/</span>`;
             container.appendChild(line);
             const subContainer = document.createElement("div");
             subContainer.id = folderId;
             subContainer.className = "collapsed";
             subContainer.style.display = "none";
             container.appendChild(subContainer);
-
             line.querySelector('.folder-toggle').addEventListener('click', function() {
                 const content = document.getElementById(folderId);
                 const arrow = this.querySelector('.arrow');
@@ -106,7 +106,11 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
         } else if (item.type === "file") {
             const viewerUrl = getViewerUrl(item.name, pathArr);
             const filePath = item.path;
-            line.innerHTML = `<span style="white-space:pre;">${linePrefix}</span><span style="margin-left:2px;">${getFileIcon(item.name, "file")}</span><a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a><a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download title="Download"><button style="padding:2px 6px;">⬇️</button></a>`;
+            line.innerHTML =
+                `<span style="white-space:pre;">${linePrefix}</span>` +
+                `${getFileIcon(item.name, "file")}` +
+                `<a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a>` +
+                `<a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download title="Download"><button style="padding:2px 6px;">⬇️</button></a>`;
             container.appendChild(line);
         }
     }
