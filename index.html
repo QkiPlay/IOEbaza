@@ -57,26 +57,9 @@
         <div class="prompt">$ Baza wiedzy IOE</div>
         <div class="tree-output" id="file-tree"></div>
     </div>
-
+    <!-- Load file/folder structure -->
+    <script src="data.js"></script>
     <script>
-        // You can freely add/edit files at the root (main directory)!
-        // Folders use objects, files use null. Example:
-        const fileStructure = {
-            "README.md": null,
-            "sample.pdf": null,
-            "notes.txt": null,
-            "Wprowadzenie do informatyki": {
-                "Zadanie 9.1.py": null,
-                "sample.pdf": null,
-                "Subfolder": {
-                    "plik.txt": null,
-                    "subsubfolder": {
-                        "nested.pdf": null
-                    }
-                }
-            }
-        };
-
         function getViewerUrl(filename, folderPathArr) {
             let filePath = '';
             if (folderPathArr && folderPathArr.length) {
