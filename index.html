@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="terminal">
-        <div class="prompt">$ Baza wiedzy IOE</div>
+        <div class="prompt">$ main</div>
         <div class="tree-output" id="file-tree"></div>
     </div>
     <script>
@@ -54,7 +54,8 @@ const hiddenFiles = [
     "style.css",
     "preview.html",
     "index.html",
-    "data.js"
+    "data.js",
+    "pdfjs"
     // Add more as needed
 ];
 
@@ -64,7 +65,6 @@ function isHidden(name) {
 
 async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
     const items = await fetchGitHubDir(basePath);
-    // Filter hidden and sort: folders first, then files
     const visibleItems = items
         .filter(item => !isHidden(item.name))
         .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
@@ -77,18 +77,29 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
 
         const line = document.createElement("div");
         line.className = "tree-line";
-        line.style.marginLeft = "0"; // Remove pixel-based indentation
+        line.style.margin = "0"; // Remove margin
+        line.style.padding = "0"; // Remove padding
 
         if (item.type === "dir") {
             const folderId = "folder_" + Math.random().toString(36).slice(2);
             line.innerHTML = `
-                <span class="folder-toggle" data-folderid="${folderId}">
-                    <span class="arrow">▶️</span>
-                    <span><span style="white-space:pre;">${linePrefix}</span>${getFileIcon(item.name, "dir")} <span style="color:#0ff;font-weight:bold;">${item.name}/</span></span>
+                <span style="white-space:pre;">${linePrefix}</span>
+                <span class="folder-toggle" data-folderid="${folderId}" style="vertical-align:middle; cursor:pointer;">
+                    <span class="arrow" style="display:inline-block; width:16px;">▶️</span>
                 </span>
-                <div id="${folderId}" class="collapsed" style="display:none;"></div>
+                ${getFileIcon(item.name, "dir")}
+                <span class="folder-name">${item.name}/</span>
             `;
             container.appendChild(line);
+
+            // Subtree container (inline, not block)
+            const subContainer = document.createElement("div");
+            subContainer.id = folderId;
+            subContainer.className = "collapsed";
+            subContainer.style.display = "none";
+            subContainer.style.margin = "0";
+            subContainer.style.padding = "0";
+            container.appendChild(subContainer);
 
             line.querySelector('.folder-toggle').addEventListener('click', function() {
                 const content = document.getElementById(folderId);
@@ -97,7 +108,6 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
                     content.style.display = "";
                     arrow.textContent = "🔽";
                     if (!content.hasChildNodes()) {
-                        // Add vertical line if not last
                         const nextPrefix = prefix + (isLast ? "    " : "│   ");
                         renderTree(content, pathArr.concat(item.name), item.path, nextPrefix);
                     }
@@ -113,7 +123,7 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
                 <span style="white-space:pre;">${linePrefix}</span>
                 ${getFileIcon(item.name, "file")}
                 <a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a>
-                <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download style="margin-left:8px;" title="Download">
+                <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download title="Download">
                     <button style="padding:2px 6px;">⬇️</button>
                 </a>
             `;
