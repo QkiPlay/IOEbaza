@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Markdown Preview</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div id="preview" style="white-space: pre-wrap; color: black;"></div>
+  <script>
+    function getQueryParam(param) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(param);
+    }
+
+    const file = getQueryParam('file') || 'README.md';
+    fetch(file)
+      .then(res => {
+        if (!res.ok) throw new Error('File not found');
+        return res.text();
+      })
+      .then(md => {
+        document.getElementById('preview').innerHTML = marked.parse(md);
+      })
+      .catch(err => {
+        document.getElementById('preview').innerText = 'Error loading file: ' + err.message;
+      });
+  </script>
+</body>
+</html>

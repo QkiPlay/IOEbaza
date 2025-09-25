@@ -63,6 +63,7 @@
         const fileStructure = {
             "Wprowadzenie do informatyki": ["Zadanie 9.1.py", "sample.pdf"]
         };
+        
         function getViewerUrl(filename, folder) {
           const ext = filename.split('.').pop().toLowerCase();
           const filePath = folder ? `${folder}/${filename}` : filename;
