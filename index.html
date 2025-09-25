@@ -55,7 +55,7 @@
                     const filePath = folderPathArr.length ? folderPathArr.concat(key).join('/') : key;
                     output += `<span class="tree-connector">${prefix}${connector}</span> <a href="${getViewerUrl(key, folderPathArr)}" class="file-link" target="_blank">${icon}${key}</a>
                     <a href="${filePath}" download style="margin-left:8px;" title="Download"><button style="padding:2px 6px;">⬇️</button></a>\n`;
-            });
+        }})
             return output;
         }
 
