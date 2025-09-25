@@ -63,7 +63,7 @@
         const fileStructure = {
             "Wprowadzenie do informatyki": ["Zadanie 9.1.py", "sample.pdf"]
         };
-        
+
         function getViewerUrl(filename, folder) {
           const ext = filename.split('.').pop().toLowerCase();
           const filePath = folder ? `${folder}/${filename}` : filename;
@@ -88,6 +88,9 @@
         // Add README.md with preview link
         output += '<span class="tree-connector">├─</span> ' +
           `<a href="${getViewerUrl('README.md', '')}" class="file-link" target="_blank">README.md</a>\n`;
+
+        output += '<span class="tree-connector">├─</span> ' +
+          `<a href="${getViewerUrl('sample.pdf', '')}" class="file-link" target="_blank">sample.pdf</a>\n`;
     
         folders.forEach((folderName, folderIndex) => {
           const files = fileStructure[folderName];
