@@ -11,90 +11,96 @@
         <div class="prompt">$ Baza wiedzy IOE</div>
         <div class="tree-output" id="file-tree"></div>
     </div>
-    <!-- Load file/folder structure -->
-    <script src="data.js"></script>
     <script>
-        function getViewerUrl(filename, folderPathArr) {
-            let filePath = '';
-            if (folderPathArr && folderPathArr.length) {
-                filePath = folderPathArr.concat(filename).join('/');
-            } else {
-                filePath = filename;
-            }
-            const ext = filename.split('.').pop().toLowerCase();
-            if (["md", "markdown"].includes(ext)) {
-                return `preview.html?file=${encodeURIComponent(filePath)}`;
-            } else if (ext === "pdf") {
-                return `pdfjs/web/viewer.html?file=../../${encodeURIComponent(filePath)}`;
-            } else {
-                return `https://github.com/QkiPlay/IOEbaza/blob/main/${encodeURIComponent(filePath)}`;
-            }
-        }
+        /**
+ * Dynamic file tree rendering for GitHub repo using GitHub API.
+ * Preserves emotes/icons, download button, folder toggling, and viewer links.
+ */
+const repoOwner = "QkiPlay";
+const repoName = "IOEbaza";
+const branch = "main"; // Change if your default branch is different
 
-        function traverseTree(tree, folderPathArr = [], prefix = '', isLast = true, parentId = '') {
-            let output = '';
-            const keys = Object.keys(tree);
-            keys.forEach((key, idx) => {
-                const value = tree[key];
-                const isFolder = value && typeof value === 'object';
-                const isLastItem = idx === keys.length - 1;
-                let connector = isLastItem ? '└─' : '├─';
-                let subPrefix = prefix + (isLast ? '   ' : '│  ');
-                const folderId = (parentId ? parentId + '-' : '') + key.replace(/\s+/g, '_');
+function getFileIcon(name, type) {
+    const ext = name.split('.').pop().toLowerCase();
+    if (type === "dir") return "📁";
+    if (["md", "markdown"].includes(ext)) return "📄";
+    if (ext === "pdf") return "📕";
+    if (["py", "js", "css", "html"].includes(ext)) return "💻";
+    return "📄";
+}
 
-                if (isFolder) {
-                    output += `<span class="tree-connector">${prefix}${connector}</span>
-                        <span class="folder-toggle" data-folderid="${folderId}" style="cursor:pointer;">
-                            <span class="arrow">⬇️</span> <span class="folder-name">📁 ${key}/</span>
-                        </span>
-                        <div class="folder-content" id="${folderId}">
-                            ${traverseTree(value, folderPathArr.concat(key), subPrefix, isLastItem, folderId)}
-                        </div>`;
+function getViewerUrl(name, pathArr) {
+    const filePath = pathArr.concat(name).join('/');
+    const ext = name.split('.').pop().toLowerCase();
+    if (["md", "markdown"].includes(ext)) {
+        return `preview.html?file=${encodeURIComponent(filePath)}`;
+    } else if (ext === "pdf") {
+        return `pdfjs/web/viewer.html?file=${encodeURIComponent(filePath)}`;
+    } else {
+        return filePath;
+    }
+}
+
+async function fetchGitHubDir(path = "") {
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}?ref=${branch}`;
+    const resp = await fetch(apiUrl);
+    if (!resp.ok) return [];
+    return await resp.json();
+}
+
+async function renderTree(container, pathArr = [], basePath = "") {
+    const items = await fetchGitHubDir(basePath);
+    items.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
+    for (const item of items) {
+        const line = document.createElement("div");
+        line.style.whiteSpace = "nowrap";
+        line.style.marginLeft = (pathArr.length * 16) + "px";
+        if (item.type === "dir") {
+            const folderId = "folder_" + Math.random().toString(36).slice(2);
+            line.innerHTML = `
+                <span class="folder-toggle" data-folderid="${folderId}" style="cursor:pointer;">
+                    <span class="arrow" style="display:inline-block;width:16px;">▶️</span> 
+                    <span>${getFileIcon(item.name, "dir")} <span style="color:#0ff;font-weight:bold;">${item.name}/</span></span>
+                </span>
+                <div id="${folderId}" class="collapsed" style="display:none;"></div>
+            `;
+            container.appendChild(line);
+
+            line.querySelector('.folder-toggle').addEventListener('click', function() {
+                const content = document.getElementById(folderId);
+                const arrow = this.querySelector('.arrow');
+                if (content.style.display === "none") {
+                    content.style.display = "";
+                    arrow.textContent = "🔽";
+                    // Only load once (lazy load)
+                    if (!content.hasChildNodes()) {
+                        renderTree(content, pathArr.concat(item.name), item.path);
+                    }
                 } else {
-                    let ext = key.split('.').pop().toLowerCase();
-                    let icon = '';
-                    if (ext === "pdf") icon = '📄 ';
-                    else if (ext === "py") icon = '🐍 ';
-                    else if (ext === "md") icon = 'ℹ️ ';
-                    const filePath = folderPathArr.length ? folderPathArr.concat(key).join('/') : key;
-                    output += `<span class="tree-connector">${prefix}${connector}</span>
-                        <a href="${getViewerUrl(key, folderPathArr)}" class="file-link" target="_blank">${icon}${key}</a><a href="${filePath}" download style="margin-left:8px;" title="Download"><button style="padding:2px 6px;">⬇️</button></a>\n`;
+                    content.style.display = "none";
+                    arrow.textContent = "▶️";
                 }
             });
-            return output;
+        } else if (item.type === "file") {
+            const viewerUrl = getViewerUrl(item.name, pathArr);
+            const filePath = item.path;
+            line.innerHTML = `
+                ${getFileIcon(item.name, "file")}
+                <a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a>
+                <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download style="margin-left:8px;" title="Download">
+                    <button style="padding:2px 6px;">⬇️</button>
+                </a>
+            `;
+            container.appendChild(line);
         }
+    }
+}
 
-        function generateTree() {
-            const container = document.getElementById('file-tree');
-            let output = '';
-
-            // Root directory line
-            output += '<span style="color: #00ffff; font-weight: bold;">IOEbaza/</span>\n';
-
-            output += traverseTree(fileStructure, [], '', true);
-
-            container.innerHTML = output;
-        }
-
-        // Generate tree when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            generateTree();
-
-            document.querySelectorAll('.folder-toggle').forEach(toggle => {
-                toggle.addEventListener('click', function() {
-                    const folderId = this.getAttribute('data-folderid');
-                    const content = document.getElementById(folderId);
-                    const arrow = this.querySelector('.arrow');
-                    if (content.classList.contains('collapsed')) {
-                        content.classList.remove('collapsed');
-                        arrow.textContent = '🔽';
-                    } else {
-                        content.classList.add('collapsed');
-                        arrow.textContent = '🔼';
-                    }
-                });
-            });
-        });
+document.addEventListener("DOMContentLoaded", async () => {
+    const treeContainer = document.getElementById("file-tree");
+    treeContainer.innerHTML = '<span style="color: #00ffff; font-weight: bold;">IOEbaza/</span>';
+    await renderTree(treeContainer);
+});
     </script>
 </body>
 </html>
