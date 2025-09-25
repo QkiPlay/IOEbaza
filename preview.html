@@ -18,6 +18,11 @@
 <body>
   <div id="preview"></div>
   <script>
+    // Register highlight.js languages
+    hljs.registerLanguage('python', window.hljs.getLanguage('python') || window.hljs.languages.python);
+    hljs.registerLanguage('c', window.hljs.getLanguage('c') || window.hljs.languages.c);
+    hljs.registerLanguage('cpp', window.hljs.getLanguage('cpp') || window.hljs.languages.cpp);
+
     function getQueryParam(param) {
       const params = new URLSearchParams(window.location.search);
       return params.get(param);
@@ -35,30 +40,36 @@
       'hpp': 'cpp'
     };
 
-    fetch(file)
-      .then(res => {
-        if (!res.ok) throw new Error('File not found');
-        return res.text();
-      })
-      .then(content => {
-        const preview = document.getElementById('preview');
-        if (ext === 'md' || ext === 'markdown') {
-          preview.innerHTML = marked.parse(content);
-        } else if (codeExts[ext]) {
-          // Highlight code
-          const lang = codeExts[ext];
-          const codeBlock = document.createElement('pre');
-          codeBlock.innerHTML = `<code class="language-${lang}">${hljs.highlight(content, {language: lang}).value}</code>`;
-          preview.innerHTML = '';
-          preview.appendChild(codeBlock);
-        } else {
-          // Plain text for other files
-          preview.innerHTML = `<pre>${content}</pre>`;
-        }
-      })
-      .catch(err => {
-        document.getElementById('preview').innerText = 'Error loading file: ' + err.message;
-      });
+    function render(content) {
+      const preview = document.getElementById('preview');
+      if (ext === 'md' || ext === 'markdown') {
+        preview.innerHTML = marked.parse(content);
+      } else if (codeExts[ext]) {
+        // Highlight code
+        const lang = codeExts[ext];
+        const codeBlock = document.createElement('pre');
+        codeBlock.innerHTML = `<code class="language-${lang}">${hljs.highlight(content, {language: lang}).value}</code>`;
+        preview.innerHTML = '';
+        preview.appendChild(codeBlock);
+      } else {
+        // Plain text for other files
+        preview.innerHTML = `<pre>${content}</pre>`;
+      }
+    }
+
+    function fetchAndRender() {
+      fetch(file)
+        .then(res => {
+          if (!res.ok) throw new Error('File not found');
+          return res.text();
+        })
+        .then(render)
+        .catch(err => {
+          document.getElementById('preview').innerText = 'Error loading file: ' + err.message;
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', fetchAndRender);
   </script>
 </body>
 </html>
