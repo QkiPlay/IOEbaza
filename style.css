@@ -1,4 +1,4 @@
- body {
+body {
             background-color: #1e1e1e;
             color: #00ff00;
             font-family: 'Courier New', monospace;
@@ -42,4 +42,12 @@
         
         .tree-connector {
             color: #888;
+        }
+        
+        .folder-content.collapsed {
+            display: none;
+        }
+        
+        .folder-toggle .arrow {
+            margin-right: 4px;
         }

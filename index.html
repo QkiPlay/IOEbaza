@@ -31,30 +31,37 @@
             }
         }
 
-        function traverseTree(tree, folderPathArr = [], prefix = '', isLast = true) {
+        function traverseTree(tree, folderPathArr = [], prefix = '', isLast = true, parentId = '') {
             let output = '';
             const keys = Object.keys(tree);
             keys.forEach((key, idx) => {
                 const value = tree[key];
                 const isFolder = value && typeof value === 'object';
                 const isLastItem = idx === keys.length - 1;
-
                 let connector = isLastItem ? '└─' : '├─';
                 let subPrefix = prefix + (isLast ? '   ' : '│  ');
+                const folderId = (parentId ? parentId + '-' : '') + key.replace(/\s+/g, '_');
 
                 if (isFolder) {
-                    output += `<span class="tree-connector">${prefix}${connector}</span> <span class="folder-name">📁 ${key}/</span>\n`;
-                    output += traverseTree(value, folderPathArr.concat(key), subPrefix, isLastItem);
+                    output += `<span class="tree-connector">${prefix}${connector}</span>
+                        <span class="folder-toggle" data-folderid="${folderId}" style="cursor:pointer;">
+                            <span class="arrow">⬇️</span> <span class="folder-name">📁 ${key}/</span>
+                        </span>
+                        <div class="folder-content" id="${folderId}">
+                            ${traverseTree(value, folderPathArr.concat(key), subPrefix, isLastItem, folderId)}
+                        </div>`;
                 } else {
-                    // File
                     let ext = key.split('.').pop().toLowerCase();
                     let icon = '';
                     if (ext === "pdf") icon = '📄 ';
                     else if (ext === "py") icon = '🐍 ';
                     else if (ext === "md") icon = 'ℹ️ ';
                     const filePath = folderPathArr.length ? folderPathArr.concat(key).join('/') : key;
-                    output += `<span class="tree-connector">${prefix}${connector}</span> <a href="${getViewerUrl(key, folderPathArr)}" class="file-link" target="_blank">${icon}${key}</a><a href="${filePath}" download style="margin-left:8px;" title="Download"><button style="padding:2px 6px;">⬇️</button></a>\n`;
-        }})
+                    output += `<span class="tree-connector">${prefix}${connector}</span>
+                        <a href="${getViewerUrl(key, folderPathArr)}" class="file-link" target="_blank">${icon}${key}</a>
+                        <a href="${filePath}" download style="margin-left:8px;" title="Download"><button style="padding:2px 6px;">⬇️</button></a>\n`;
+                }
+            });
             return output;
         }
 
@@ -71,7 +78,24 @@
         }
 
         // Generate tree when page loads
-        document.addEventListener('DOMContentLoaded', generateTree);
+        document.addEventListener('DOMContentLoaded', () => {
+            generateTree();
+
+            document.querySelectorAll('.folder-toggle').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const folderId = this.getAttribute('data-folderid');
+                    const content = document.getElementById(folderId);
+                    const arrow = this.querySelector('.arrow');
+                    if (content.classList.contains('collapsed')) {
+                        content.classList.remove('collapsed');
+                        arrow.textContent = '🔽';
+                    } else {
+                        content.classList.add('collapsed');
+                        arrow.textContent = '🔼';
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
