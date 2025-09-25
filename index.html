@@ -106,9 +106,17 @@
           files.forEach((filename, fileIndex) => {
             const isLastFile = fileIndex === files.length - 1;
             const fileConnector = isLastFile ? '└─' : '├─';
-    
-            output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> ` +
+            ext = filename.split('.').pop().toLowerCase();
+            if(ext === "pdf"){
+                          output += `<span class="tree-connector">${verticalLine}📄${fileConnector}</span> ` +
               `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">${filename}</a>\n`;
+            }else if(ext === "py"){
+              output += `<span class="tree-connector">${verticalLine}🐍${fileConnector}</span> ` +
+              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">${filename}</a>\n`;
+            }else{
+              output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> ` +
+              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">${filename}</a>\n`;
+            }
           });
         });
             
