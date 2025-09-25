@@ -48,18 +48,34 @@ async function fetchGitHubDir(path = "") {
     return await resp.json();
 }
 
+// List of files/folders to hide (exact names or patterns)
+const hiddenFiles = [
+    ".gitignore",
+    "README.md",
+    "LICENSE",
+    "node_modules",
+    ".github",
+    // Add more as needed
+];
+
+function isHidden(name) {
+    return hiddenFiles.some(pattern => name === pattern);
+}
+
 async function renderTree(container, pathArr = [], basePath = "") {
     const items = await fetchGitHubDir(basePath);
     items.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
     for (const item of items) {
+        if (isHidden(item.name)) continue; // Skip hidden files/folders
+
         const line = document.createElement("div");
-        line.style.whiteSpace = "nowrap";
+        line.className = "tree-line";
         line.style.marginLeft = (pathArr.length * 16) + "px";
         if (item.type === "dir") {
             const folderId = "folder_" + Math.random().toString(36).slice(2);
             line.innerHTML = `
-                <span class="folder-toggle" data-folderid="${folderId}" style="cursor:pointer;">
-                    <span class="arrow" style="display:inline-block;width:16px;">▶️</span> 
+                <span class="folder-toggle" data-folderid="${folderId}">
+                    <span class="arrow">▶️</span> 
                     <span>${getFileIcon(item.name, "dir")} <span style="color:#0ff;font-weight:bold;">${item.name}/</span></span>
                 </span>
                 <div id="${folderId}" class="collapsed" style="display:none;"></div>
@@ -72,7 +88,6 @@ async function renderTree(container, pathArr = [], basePath = "") {
                 if (content.style.display === "none") {
                     content.style.display = "";
                     arrow.textContent = "🔽";
-                    // Only load once (lazy load)
                     if (!content.hasChildNodes()) {
                         renderTree(content, pathArr.concat(item.name), item.path);
                     }

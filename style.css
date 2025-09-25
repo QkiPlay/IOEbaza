@@ -56,3 +56,33 @@ body {
             display: inline;
             vertical-align: middle;
         }
+                /* File tree look */
+        .tree-output {
+            font-family: monospace;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+        .tree-line {
+            position: relative;
+            padding-left: 24px;
+        }
+        .tree-line:before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: #0ff;
+            opacity: 0.3;
+        }
+        .tree-line:last-child:before {
+            display: none;
+        }
+        .folder-toggle {
+            cursor: pointer;
+        }
+        .arrow {
+            width: 16px;
+            display: inline-block;
+        }
