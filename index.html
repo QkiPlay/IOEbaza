@@ -108,11 +108,14 @@
             const fileConnector = isLastFile ? '└─' : '├─';
             ext = filename.split('.').pop().toLowerCase();
             if(ext === "pdf"){
-                          output += `<span class="tree-connector">${verticalLine}📄${fileConnector}</span> ` +
-              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">${filename}</a>\n`;
+                          output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> ` +
+              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">📄${filename}</a>\n`;
             }else if(ext === "py"){
-              output += `<span class="tree-connector">${verticalLine}🐍${fileConnector}</span> ` +
-              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">${filename}</a>\n`;
+              output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> ` +
+              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">🐍${filename}</a>\n`;
+            }else if(ext === "md"){
+              output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> ` +
+              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">ℹ️${filename}</a>\n`;
             }else{
               output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> ` +
               `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">${filename}</a>\n`;
