@@ -77,28 +77,23 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
 
         const line = document.createElement("div");
         line.className = "tree-line";
-        line.style.margin = "0"; // Remove margin
-        line.style.padding = "0"; // Remove padding
 
         if (item.type === "dir") {
             const folderId = "folder_" + Math.random().toString(36).slice(2);
             line.innerHTML = `
                 <span style="white-space:pre;">${linePrefix}</span>
-                <span class="folder-toggle" data-folderid="${folderId}" style="vertical-align:middle; cursor:pointer;">
-                    <span class="arrow" style="display:inline-block; width:16px;">▶️</span>
+                <span class="folder-toggle" data-folderid="${folderId}" style="cursor:pointer;">
+                    <span class="arrow" style="width:16px;display:inline-block;">▶️</span>
                 </span>
-                ${getFileIcon(item.name, "dir")}
+                <span style="margin-left:2px;">${getFileIcon(item.name, "dir")}</span>
                 <span class="folder-name">${item.name}/</span>
             `;
             container.appendChild(line);
 
-            // Subtree container (inline, not block)
             const subContainer = document.createElement("div");
             subContainer.id = folderId;
             subContainer.className = "collapsed";
             subContainer.style.display = "none";
-            subContainer.style.margin = "0";
-            subContainer.style.padding = "0";
             container.appendChild(subContainer);
 
             line.querySelector('.folder-toggle').addEventListener('click', function() {
@@ -121,7 +116,7 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
             const filePath = item.path;
             line.innerHTML = `
                 <span style="white-space:pre;">${linePrefix}</span>
-                ${getFileIcon(item.name, "file")}
+                <span style="margin-left:2px;">${getFileIcon(item.name, "file")}</span>
                 <a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a>
                 <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download title="Download">
                     <button style="padding:2px 6px;">⬇️</button>

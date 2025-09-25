@@ -71,9 +71,11 @@ body {
     font-size: 15px;
     font-family: monospace;
     white-space: pre;
+    display: flex;
+    align-items: center;
 }
 
-.folder-toggle, .arrow, .folder-name {
+.folder-toggle, .arrow, .folder-name, .file-link {
     display: inline;
     vertical-align: middle;
     margin: 0;
@@ -83,4 +85,9 @@ body {
 .collapsed {
     margin: 0;
     padding: 0;
+}
+
+button {
+    margin-left: 4px;
+    vertical-align: middle;
 }
