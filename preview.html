@@ -2,11 +2,21 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Markdown Preview</title>
+  <title>File Preview</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/c.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/cpp.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body { background: #222; color: #eee; font-family: 'Consolas', 'Courier New', monospace; }
+    #preview { margin: 20px; }
+    pre { background: #181818; padding: 16px; border-radius: 6px; }
+  </style>
 </head>
 <body>
-  <div id="preview" style="white-space: pre-wrap; color: black;"></div>
+  <div id="preview"></div>
   <script>
     function getQueryParam(param) {
       const params = new URLSearchParams(window.location.search);
@@ -14,13 +24,37 @@
     }
 
     const file = getQueryParam('file') || 'README.md';
+    const ext = file.split('.').pop().toLowerCase();
+
+    // Supported code extensions
+    const codeExts = {
+      'py': 'python',
+      'c': 'c',
+      'cpp': 'cpp',
+      'h': 'c',
+      'hpp': 'cpp'
+    };
+
     fetch(file)
       .then(res => {
         if (!res.ok) throw new Error('File not found');
         return res.text();
       })
-      .then(md => {
-        document.getElementById('preview').innerHTML = marked.parse(md);
+      .then(content => {
+        const preview = document.getElementById('preview');
+        if (ext === 'md' || ext === 'markdown') {
+          preview.innerHTML = marked.parse(content);
+        } else if (codeExts[ext]) {
+          // Highlight code
+          const lang = codeExts[ext];
+          const codeBlock = document.createElement('pre');
+          codeBlock.innerHTML = `<code class="language-${lang}">${hljs.highlight(content, {language: lang}).value}</code>`;
+          preview.innerHTML = '';
+          preview.appendChild(codeBlock);
+        } else {
+          // Plain text for other files
+          preview.innerHTML = `<pre>${content}</pre>`;
+        }
       })
       .catch(err => {
         document.getElementById('preview').innerText = 'Error loading file: ' + err.message;

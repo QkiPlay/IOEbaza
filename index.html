@@ -25,7 +25,7 @@ function getFileIcon(name, type) {
     if (type === "dir") return "📁";
     if (["md", "markdown"].includes(ext)) return "📄";
     if (["pdf"].includes(ext)) return "📕";
-    if (["py", "js", "css", "html"].includes(ext)) return "💻";
+    if (["py", "js", "css", "html", "c", "cpp", "h", "hpp"].includes(ext)) return "💻";
     if (["png", "jpg", "jpeg"].includes(ext)) return "🖼️";
     return "📄";
 }
@@ -35,8 +35,11 @@ function getViewerUrl(name, pathArr) {
     const ext = name.split('.').pop().toLowerCase();
     if (["md", "markdown"].includes(ext)) {
         return `preview.html?file=${encodeURIComponent(filePath)}`;
-    } else if (ext === "pdf") {
+    } else if (["pdf"].includes(ext)) {
         return `pdfjs/web/viewer.html?file=../../${encodeURIComponent(filePath)}`;
+    } else if (["py", "js", "css", "html", "c", "cpp", "h", "hpp"].includes(ext)) {
+        // Open code files in preview.html
+        return `preview.html?file=${encodeURIComponent(filePath)}`;
     } else {
         return filePath;
     }
@@ -106,11 +109,10 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
             });
         } else if (item.type === "file") {
             const viewerUrl = getViewerUrl(item.name, pathArr);
-            const filePath = item.path;
             line.innerHTML =
                 `<span style="white-space:pre;">${linePrefix}</span>` +
                 `${getFileIcon(item.name, "file")}` +
-                `<a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a>`;
+                `<a href="${viewerUrl}" class="file-link" target="_blank" rel="noopener noreferrer">${item.name}</a>`;
             container.appendChild(line);
         }
     }
