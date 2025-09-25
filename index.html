@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="terminal">
-        <div class="prompt">$ main</div>
+        <div class="prompt">$ Baza wiedzy IOE</div>
         <div class="tree-output" id="file-tree"></div>
     </div>
     <script>
@@ -109,8 +109,7 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
             line.innerHTML =
                 `<span style="white-space:pre;">${linePrefix}</span>` +
                 `${getFileIcon(item.name, "file")}` +
-                `<a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a>` +
-                `<a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download title="Download"><button style="padding:2px 6px;">⬇️</button></a>`;
+                `<a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a>`;
             container.appendChild(line);
         }
     }
@@ -118,9 +117,9 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
 
 document.addEventListener("DOMContentLoaded", async () => {
     const treeContainer = document.getElementById("file-tree");
-    treeContainer.innerHTML = '<span style="color: #00ffff; font-weight: bold;">$ Baza wiedzy IOE/</span>';
+    treeContainer.innerHTML = '<span style="color: #00ffff; font-weight: bold;">$ main/</span>';
     await renderTree(treeContainer);
-});
+}); 
     </script>
 </body>
 </html>
