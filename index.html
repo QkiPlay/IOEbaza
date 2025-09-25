@@ -80,16 +80,8 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
 
         if (item.type === "dir") {
             const folderId = "folder_" + Math.random().toString(36).slice(2);
-            line.innerHTML = `
-                <span style="white-space:pre;">${linePrefix}</span>
-                <span class="folder-toggle" data-folderid="${folderId}" style="cursor:pointer;">
-                    <span class="arrow" style="width:16px;display:inline-block;">▶️</span>
-                </span>
-                <span style="margin-left:2px;">${getFileIcon(item.name, "dir")}</span>
-                <span class="folder-name">${item.name}/</span>
-            `;
+            line.innerHTML = `<span style="white-space:pre;">${linePrefix}</span><span class="folder-toggle" data-folderid="${folderId}" style="cursor:pointer;"><span class="arrow" style="width:16px;display:inline-block;">▶️</span></span><span style="margin-left:2px;">${getFileIcon(item.name, "dir")}</span><span class="folder-name">${item.name}/</span>`;
             container.appendChild(line);
-
             const subContainer = document.createElement("div");
             subContainer.id = folderId;
             subContainer.className = "collapsed";
@@ -114,14 +106,7 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
         } else if (item.type === "file") {
             const viewerUrl = getViewerUrl(item.name, pathArr);
             const filePath = item.path;
-            line.innerHTML = `
-                <span style="white-space:pre;">${linePrefix}</span>
-                <span style="margin-left:2px;">${getFileIcon(item.name, "file")}</span>
-                <a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a>
-                <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download title="Download">
-                    <button style="padding:2px 6px;">⬇️</button>
-                </a>
-            `;
+            line.innerHTML = `<span style="white-space:pre;">${linePrefix}</span><span style="margin-left:2px;">${getFileIcon(item.name, "file")}</span><a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a><a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download title="Download"><button style="padding:2px 6px;">⬇️</button></a>`;
             container.appendChild(line);
         }
     }
