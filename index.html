@@ -59,70 +59,77 @@
     </div>
 
     <script>
-        // File structure - edit this to add folders/files
+        // You can freely add/edit files at the root (main directory)!
+        // Folders use objects, files use null. Example:
         const fileStructure = {
-            "Wprowadzenie do informatyki": ["Zadanie 9.1.py", "sample.pdf"]
+            "README.md": null,
+            "sample.pdf": null,
+            "notes.txt": null,
+            "Wprowadzenie do informatyki": {
+                "Zadanie 9.1.py": null,
+                "sample.pdf": null,
+                "Subfolder": {
+                    "plik.txt": null,
+                    "subsubfolder": {
+                        "nested.pdf": null
+                    }
+                }
+            }
         };
 
-        function getViewerUrl(filename, folder) {
-          const ext = filename.split('.').pop().toLowerCase();
-          const filePath = folder ? `${folder}/${filename}` : filename;
-        
-          if (["md", "markdown"].includes(ext)) {
-            return `preview.html?file=${encodeURIComponent(filePath)}`;
-          } else if (ext === "pdf") {
-            return `pdfjs/web/viewer.html?file=../../${encodeURIComponent(filePath)}`;
-          } else {
-            return `https://github.com/QkiPlay/IOEbaza/blob/main/${encodeURIComponent(filePath)}`;
-          }
-        }
-        
-      function generateTree() {
-        const container = document.getElementById('file-tree');
-        const folders = Object.keys(fileStructure);
-        let output = '';
-    
-        // Root directory line: you can change this as needed
-        output += '<span style="color: #00ffff; font-weight: bold;">IOEbaza/</span>\n';
-    
-        // Add README.md with preview link
-        output += '<span class="tree-connector">├─</span> ' +
-          `<a href="${getViewerUrl('README.md', '')}" class="file-link" target="_blank">README.md</a>\n`;
-
-        output += '<span class="tree-connector">├─</span> ' +
-          `<a href="${getViewerUrl('sample.pdf', '')}" class="file-link" target="_blank">sample.pdf</a>\n`;
-    
-        folders.forEach((folderName, folderIndex) => {
-          const files = fileStructure[folderName];
-          const isLastFolder = folderIndex === folders.length - 1;
-          const folderConnector = isLastFolder ? '└─' : '├─';
-          const verticalLine = isLastFolder ? '   ' : '│  ';
-    
-          // Folder line
-          output += `<span class="tree-connector">${folderConnector}</span> ` +
-            `<span class="folder-name">📁 ${folderName}/</span>\n`;
-    
-          // Files in folder
-          files.forEach((filename, fileIndex) => {
-            const isLastFile = fileIndex === files.length - 1;
-            const fileConnector = isLastFile ? '└─' : '├─';
-            ext = filename.split('.').pop().toLowerCase();
-            if(ext === "pdf"){
-                          output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> ` +
-              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">📄 ${filename}</a>\n`;
-            }else if(ext === "py"){
-              output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> ` +
-              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">🐍 ${filename}</a>\n`;
-            }else if(ext === "md"){
-              output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> ` +
-              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">ℹ️ ${filename}</a>\n`;
-            }else{
-              output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> ` +
-              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">${filename}</a>\n`;
+        function getViewerUrl(filename, folderPathArr) {
+            let filePath = '';
+            if (folderPathArr && folderPathArr.length) {
+                filePath = folderPathArr.concat(filename).join('/');
+            } else {
+                filePath = filename;
             }
-          });
-        });
-            
+            const ext = filename.split('.').pop().toLowerCase();
+            if (["md", "markdown"].includes(ext)) {
+                return `preview.html?file=${encodeURIComponent(filePath)}`;
+            } else if (ext === "pdf") {
+                return `pdfjs/web/viewer.html?file=../../${encodeURIComponent(filePath)}`;
+            } else {
+                return `https://github.com/QkiPlay/IOEbaza/blob/main/${encodeURIComponent(filePath)}`;
+            }
+        }
+
+        function traverseTree(tree, folderPathArr = [], prefix = '', isLast = true) {
+            let output = '';
+            const keys = Object.keys(tree);
+            keys.forEach((key, idx) => {
+                const value = tree[key];
+                const isFolder = value && typeof value === 'object';
+                const isLastItem = idx === keys.length - 1;
+
+                let connector = isLastItem ? '└─' : '├─';
+                let subPrefix = prefix + (isLast ? '   ' : '│  ');
+
+                if (isFolder) {
+                    output += `<span class="tree-connector">${prefix}${connector}</span> <span class="folder-name">📁 ${key}/</span>\n`;
+                    output += traverseTree(value, folderPathArr.concat(key), subPrefix, isLastItem);
+                } else {
+                    // File
+                    let ext = key.split('.').pop().toLowerCase();
+                    let icon = '';
+                    if (ext === "pdf") icon = '📄 ';
+                    else if (ext === "py") icon = '🐍 ';
+                    else if (ext === "md") icon = 'ℹ️ ';
+                    output += `<span class="tree-connector">${prefix}${connector}</span> <a href="${getViewerUrl(key, folderPathArr)}" class="file-link" target="_blank">${icon}${key}</a>\n`;
+                }
+            });
+            return output;
+        }
+
+        function generateTree() {
+            const container = document.getElementById('file-tree');
+            let output = '';
+
+            // Root directory line
+            output += '<span style="color: #00ffff; font-weight: bold;">IOEbaza/</span>\n';
+
+            output += traverseTree(fileStructure, [], '', true);
+
             container.innerHTML = output;
         }
 
@@ -131,4 +138,3 @@
     </script>
 </body>
 </html>
-
