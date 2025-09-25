@@ -63,35 +63,38 @@
         const fileStructure = {
             "Wprowadzenie do informatyki": ["Zadanie 9.1.py"]
         };
-
-        function generateTree() {
-            const container = document.getElementById('file-tree');
-            const folders = Object.keys(fileStructure);
-            let output = '';
-            
-            // Root directory
-            output += '<span style="color: #00ffff; font-weight: bold;">IOEbaza/</span>\n';
-            
-            // Add index.html
-            output += '<span class="tree-connector">├─</span> <a href="README.md" class="file-link" target="_blank">README.md</a> <span style="color: #666;"></span>\n';
-            
-            folders.forEach((folderName, folderIndex) => {
-                const files = fileStructure[folderName];
-                const isLastFolder = folderIndex === folders.length - 1;
-                const folderConnector = isLastFolder ? '└─' : '├─';
-                const verticalLine = isLastFolder ? '   ' : '│  ';
-                
-                // Folder line
-                output += `<span class="tree-connector">${folderConnector}</span> <span class="folder-name">📁 ${folderName}/</span>\n`;
-                
-                // Files in folder
-                files.forEach((filename, fileIndex) => {
-                    const isLastFile = fileIndex === files.length - 1;
-                    const fileConnector = isLastFile ? '└─' : '├─';
-                    
-                    output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> <a href="https://github.com/QkiPlay/IOEbaza/blob/main/${folderName}/${filename}" class="file-link" target="_blank">${filename}</a>\n`;
-                });
-            });
+    
+      function generateTree() {
+        const container = document.getElementById('file-tree');
+        const folders = Object.keys(fileStructure);
+        let output = '';
+    
+        // Root directory line: you can change this as needed
+        output += '<span style="color: #00ffff; font-weight: bold;">IOEbaza/</span>\n';
+    
+        // Add README.md with preview link
+        output += '<span class="tree-connector">├─</span> ' +
+          `<a href="${getViewerUrl('README.md', '')}" class="file-link" target="_blank">README.md</a>\n`;
+    
+        folders.forEach((folderName, folderIndex) => {
+          const files = fileStructure[folderName];
+          const isLastFolder = folderIndex === folders.length - 1;
+          const folderConnector = isLastFolder ? '└─' : '├─';
+          const verticalLine = isLastFolder ? '   ' : '│  ';
+    
+          // Folder line
+          output += `<span class="tree-connector">${folderConnector}</span> ` +
+            `<span class="folder-name">📁 ${folderName}/</span>\n`;
+    
+          // Files in folder
+          files.forEach((filename, fileIndex) => {
+            const isLastFile = fileIndex === files.length - 1;
+            const fileConnector = isLastFile ? '└─' : '├─';
+    
+            output += `<span class="tree-connector">${verticalLine}${fileConnector}</span> ` +
+              `<a href="${getViewerUrl(filename, folderName)}" class="file-link" target="_blank">${filename}</a>\n`;
+          });
+        });
             
             container.innerHTML = output;
         }
