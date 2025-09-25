@@ -4,7 +4,7 @@ window.fileStructure = {
         "Python": {
             "Zadanie 9.1.py": null
         }
-    }
+    },
     "Miernictwo Elektroniczne":{
         "Podręcznik laboratoria": {
             "Rozdział 0 - Wstęp.pdf": null,
@@ -17,7 +17,7 @@ window.fileStructure = {
             "Rozdział 7 - Metody pomiaru rezystancji i impedancji.pdf": null,
             "Rozdział 8 - Pomiary zniekształceń nieliniowych i analiza widmowa sygnałów.pdf": null,
             "Rozdział 9 - Automatyzacja pomiarów.pdf": null,
-            "Rozdział 10 - Oscyloskopy cyfrowe.pdf": null,
+            "Rozdział 10 - Oscyloskopy cyfrowe.pdf": null
         }
     }
 };
