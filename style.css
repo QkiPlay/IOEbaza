@@ -51,3 +51,8 @@ body {
         .folder-toggle .arrow {
             margin-right: 4px;
         }
+        
+        .folder-toggle, .arrow, .folder-name {
+            display: inline;
+            vertical-align: middle;
+        }
