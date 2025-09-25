@@ -35,7 +35,7 @@ function getViewerUrl(name, pathArr) {
     if (["md", "markdown"].includes(ext)) {
         return `preview.html?file=${encodeURIComponent(filePath)}`;
     } else if (ext === "pdf") {
-        return `pdfjs/web/viewer.html?file=${encodeURIComponent(filePath)}`;
+        return `pdfjs/web/viewer.html?file=/../../${encodeURIComponent(filePath)}`;
     } else {
         return filePath;
     }
