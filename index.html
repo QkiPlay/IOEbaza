@@ -24,7 +24,7 @@ function getFileIcon(name, type) {
     const ext = name.split('.').pop().toLowerCase();
     if (type === "dir") return "📁";
     if (["md", "markdown"].includes(ext)) return "📄";
-    if (ext === "pdf") return "📕";
+    if (["pdf"].includes(ext)) return "📕";
     if (["py", "js", "css", "html"].includes(ext)) return "💻";
     return "📄";
 }
@@ -101,11 +101,7 @@ async function renderTree(container, pathArr = [], basePath = "") {
             const filePath = item.path;
             line.innerHTML = `
                 ${getFileIcon(item.name, "file")}
-                <a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a>
-                <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download style="margin-left:8px;" title="Download">
-                    <button style="padding:2px 6px;">⬇️</button>
-                </a>
-            `;
+                <a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a><a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download style="margin-left:8px;" title="Download"><button style="padding:2px 6px;">⬇️</button></a>`;
             container.appendChild(line);
         }
     }
@@ -113,7 +109,7 @@ async function renderTree(container, pathArr = [], basePath = "") {
 
 document.addEventListener("DOMContentLoaded", async () => {
     const treeContainer = document.getElementById("file-tree");
-    treeContainer.innerHTML = '<span style="color: #00ffff; font-weight: bold;">IOEbaza/</span>';
+    treeContainer.innerHTML = '<span style="color: #00ffff; font-weight: bold;">$ Baza wiedzy IOE/</span>';
     await renderTree(treeContainer);
 });
     </script>
