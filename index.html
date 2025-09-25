@@ -62,21 +62,29 @@ function isHidden(name) {
     return hiddenFiles.some(pattern => name === pattern);
 }
 
-async function renderTree(container, pathArr = [], basePath = "") {
+async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
     const items = await fetchGitHubDir(basePath);
-    items.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
-    for (const item of items) {
-        if (isHidden(item.name)) continue; // Skip hidden files/folders
+    // Filter hidden and sort: folders first, then files
+    const visibleItems = items
+        .filter(item => !isHidden(item.name))
+        .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
+
+    for (let i = 0; i < visibleItems.length; i++) {
+        const item = visibleItems[i];
+        const isLast = i === visibleItems.length - 1;
+        const connector = isLast ? "└── " : "├── ";
+        const linePrefix = prefix + connector;
 
         const line = document.createElement("div");
         line.className = "tree-line";
-        line.style.marginLeft = (pathArr.length * 16) + "px";
+        line.style.marginLeft = "0"; // Remove pixel-based indentation
+
         if (item.type === "dir") {
             const folderId = "folder_" + Math.random().toString(36).slice(2);
             line.innerHTML = `
                 <span class="folder-toggle" data-folderid="${folderId}">
-                    <span class="arrow">▶️</span> 
-                    <span>${getFileIcon(item.name, "dir")} <span style="color:#0ff;font-weight:bold;">${item.name}/</span></span>
+                    <span class="arrow">▶️</span>
+                    <span><span style="white-space:pre;">${linePrefix}</span>${getFileIcon(item.name, "dir")} <span style="color:#0ff;font-weight:bold;">${item.name}/</span></span>
                 </span>
                 <div id="${folderId}" class="collapsed" style="display:none;"></div>
             `;
@@ -89,7 +97,9 @@ async function renderTree(container, pathArr = [], basePath = "") {
                     content.style.display = "";
                     arrow.textContent = "🔽";
                     if (!content.hasChildNodes()) {
-                        renderTree(content, pathArr.concat(item.name), item.path);
+                        // Add vertical line if not last
+                        const nextPrefix = prefix + (isLast ? "    " : "│   ");
+                        renderTree(content, pathArr.concat(item.name), item.path, nextPrefix);
                     }
                 } else {
                     content.style.display = "none";
@@ -100,8 +110,13 @@ async function renderTree(container, pathArr = [], basePath = "") {
             const viewerUrl = getViewerUrl(item.name, pathArr);
             const filePath = item.path;
             line.innerHTML = `
+                <span style="white-space:pre;">${linePrefix}</span>
                 ${getFileIcon(item.name, "file")}
-                <a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a><a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download style="margin-left:8px;" title="Download"><button style="padding:2px 6px;">⬇️</button></a>`;
+                <a href="${viewerUrl}" class="file-link" target="_blank">${item.name}</a>
+                <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${filePath}" download style="margin-left:8px;" title="Download">
+                    <button style="padding:2px 6px;">⬇️</button>
+                </a>
+            `;
             container.appendChild(line);
         }
     }
