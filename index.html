@@ -63,7 +63,19 @@
         const fileStructure = {
             "Wprowadzenie do informatyki": ["Zadanie 9.1.py"]
         };
-    
+        function getViewerUrl(filename, folder) {
+          const ext = filename.split('.').pop().toLowerCase();
+          const filePath = folder ? `${folder}/${filename}` : filename;
+        
+          if (["md", "markdown"].includes(ext)) {
+            return `preview.html?file=${encodeURIComponent(filePath)}`;
+          } else if (ext === "pdf") {
+            return `pdfjs/web/viewer.html?file=${encodeURIComponent(filePath)}`;
+          } else {
+            return `https://github.com/QkiPlay/IOEbaza/blob/main/${encodeURIComponent(filePath)}`;
+          }
+        }
+        
       function generateTree() {
         const container = document.getElementById('file-tree');
         const folders = Object.keys(fileStructure);
