@@ -1,88 +1,92 @@
 body {
-            background-color: #1e1e1e;
-            color: #00ff00;
-            font-family: 'Courier New', monospace;
-            padding: 20px;
-            margin: 0;
-        }
-        
-        .terminal {
-            background-color: #000;
-            border: 1px solid #333;
-            border-radius: 5px;
-            padding: 15px;
-            max-width: 800px;
-        }
-        
-        .prompt {
-            color: #00ffff;
-            margin-bottom: 10px;
-        }
-        
-        .tree-output {
-            color: #00ff00;
-            line-height: 1.4;
-            white-space: pre;
-        }
-        
-        .folder-name {
-            color: #00ffff;
-            font-weight: bold;
-        }
-        
-        .file-link {
-            color: #ffffff;
-            text-decoration: none;
-        }
-        
-        .file-link:hover {
-            color: #ffff00;
-            text-decoration: underline;
-        }
-        
-        .tree-connector {
-            color: #888;
-        }
-        
-        .folder-content.collapsed {
-            display: none;
-        }
-        
-        .folder-toggle .arrow {
-            margin-right: 4px;
-        }
-        
-        .folder-toggle, .arrow, .folder-name {
-            display: inline;
-            vertical-align: middle;
-        }
-                /* File tree look */
-        .tree-output {
-            font-family: monospace;
-            font-size: 16px;
-            margin-top: 8px;
-        }
-        .tree-line {
-            position: relative;
-            padding-left: 24px;
-        }
-        .tree-line:before {
-            content: "";
-            position: absolute;
-            left: 8px;
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            background: #0ff;
-            opacity: 0.3;
-        }
-        .tree-line:last-child:before {
-            display: none;
-        }
-        .folder-toggle {
-            cursor: pointer;
-        }
-        .arrow {
-            width: 16px;
-            display: inline-block;
-        }
+    background-color: #1e1e1e;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    padding: 10px;
+    margin: 0;
+}
+
+.terminal {
+    background-color: #000;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 10px;
+    max-width: 800px;
+}
+
+.prompt {
+    color: #00ffff;
+    margin-bottom: 6px;
+}
+
+.tree-output {
+    color: #00ff00;
+    line-height: 1.1;
+    white-space: pre;
+    font-family: monospace;
+    font-size: 15px;
+    margin-top: 4px;
+}
+
+.folder-name {
+    color: #00ffff;
+    font-weight: bold;
+}
+
+.file-link {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.file-link:hover {
+    color: #ffff00;
+    text-decoration: underline;
+}
+
+.tree-connector {
+    color: #888;
+}
+
+.folder-content.collapsed {
+    display: none;
+}
+
+.folder-toggle .arrow {
+    margin-right: 2px;
+}
+
+.folder-toggle, .arrow, .folder-name {
+    display: inline;
+    vertical-align: middle;
+}
+
+/* File tree look */
+.tree-line {
+    position: relative;
+    padding-left: 14px;
+    margin-bottom: 2px;
+}
+
+.tree-line:before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #0ff;
+    opacity: 0.3;
+}
+
+.tree-line:last-child:before {
+    display: none;
+}
+
+.folder-toggle {
+    cursor: pointer;
+}
+
+.arrow {
+    width: 14px;
+    display: inline-block;
+}
