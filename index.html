@@ -84,15 +84,19 @@ async function renderTree(container, pathArr = [], basePath = "", prefix = "") {
             const folderId = "folder_" + Math.random().toString(36).slice(2);
             line.innerHTML =
                 `<span style="white-space:pre;">${linePrefix}</span>` +
-                `<span class="folder-toggle" data-folderid="${folderId}" style="cursor:pointer;"><span class="arrow" style="width:16px;display:inline-block;">▶️</span></span>` +
-                `${getFileIcon(item.name, "dir")}` +
-                `<span class="folder-name">${item.name}/</span>`;
+                `<span class="folder-toggle" data-folderid="${folderId}" style="cursor:pointer;">` +
+                    `<span class="arrow" style="width:16px;display:inline-block;">▶️</span>` +
+                    `${getFileIcon(item.name, "dir")}` +
+                    `<span class="folder-name" style="margin-left:4px;">${item.name}/</span>` +
+                `</span>`;
             container.appendChild(line);
             const subContainer = document.createElement("div");
             subContainer.id = folderId;
             subContainer.className = "collapsed";
             subContainer.style.display = "none";
             container.appendChild(subContainer);
+
+            // Make the whole folder-toggle (icon + name) clickable
             line.querySelector('.folder-toggle').addEventListener('click', function() {
                 const content = document.getElementById(folderId);
                 const arrow = this.querySelector('.arrow');
